@@ -82,10 +82,58 @@ module.exports.removeNote = (queryTitle)=>{
   }
 }
 
-const listNotes = ()=>{
+module.exports.listNotes = ()=>{
+
+  try {
+    
+    let dataObj = readJSON(jsonStorePath);
+    let notesArray = dataObj.notes;
+    let noteId = 0;
+    logger('success',`Total ${notesArray.length} Notes Found`);
+    for(let notesObj of notesArray){
+      console.log(`${noteId + 1}. Title -> ${notesObj.title ? notesObj.title : ''}`);
+      noteId++;
+    }
+
+  } catch (error) {
+    logger('failure',`Failed To Load Notes`);
+  }
 
 }
 
-const readNote = (queryTitle)=>{
+module.exports.readNote = (queryTitle,position)=>{
+
+  // console.log(position,queryTitle);
+
+  if(!queryTitle && !position){
+    logger('failure',`Provide either of title or valid id`);
+    return;
+  }
+
+  let dataObj = readJSON(jsonStorePath);
+  let notesArray = dataObj.notes;
+
+  if(position && (notesArray.length >= position && position >= 1)){
+    logger('success','Note Found');
+    console.log(`Title -> ${notesArray[position-1].title}`);
+    console.log(`Body -> ${notesArray[position-1].body}`);
+    return;
+  }
   
+  if(queryTitle){
+    let queryTitleLowerCase = queryTitle.toLowerCase();
+
+    for(let notesObj of notesArray){
+
+      if(notesObj.title.toLowerCase() === queryTitleLowerCase){
+        logger('success','Note Found');
+        console.log(`Title -> ${notesObj.title}`);
+        console.log(`Body -> ${notesObj.body}`);
+        return;
+      }
+    }
+  }
+  
+  logger('failure','Note Not Found');
+
 }

@@ -45,14 +45,28 @@ yargs.command({
 yargs.command({
   command : 'list',
   description : 'command to list Notes',
-  handler : (args)=>{console.log('executing list command');}
+  handler : (args)=>{
+    notes.listNotes();
+  }
 });
 
 // setting up read command
 yargs.command({
   command : 'read',
   description : 'command to read Notes',
-  handler : (args)=>{console.log('executing read command');}
+  builder : {
+    title : {
+      describe : 'note title',
+      type : 'string'
+    },
+    id : {
+      describe : 'id of Note',
+      type : 'number'
+    }
+  },
+  handler : (args)=>{
+    notes.readNote(args.title,args.id);
+  }
 });
 
 yargs.argv
